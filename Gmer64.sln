@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gmer64", "Gmer64\Gmer64.csproj", "{ED97C224-1716-4289-9883-9F39C995E2EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED97C224-1716-4289-9883-9F39C995E2EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED97C224-1716-4289-9883-9F39C995E2EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED97C224-1716-4289-9883-9F39C995E2EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED97C224-1716-4289-9883-9F39C995E2EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F8E85A7-A490-4E5B-8EE9-33328BAA1FE1}
+	EndGlobalSection
+EndGlobal
