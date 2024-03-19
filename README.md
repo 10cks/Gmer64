@@ -1,6 +1,6 @@
 # Gmer64
 
-admin cmd init service:
+admin cmd init service: (current symbol use blackout instead of Terminator)
 ```
 sc create Terminator binPath= "C:\Users\username\Desktop\gmer64.sys" type= kernel start= demand
 sc start Terminator
