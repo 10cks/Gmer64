@@ -12,8 +12,6 @@ using System.Threading;
 class Program
 {
     // Gmer64.sys 设备IO控制码
-    // IOCTL 0x9876C004
-    // IOCTL 0x9876C094
 
     const uint INITIALIZE_IOCTL_CODE = 0x9876C004;
     const uint TERMINATE_PROCESS_IOCTL_CODE = 0x9876C094;
@@ -37,7 +35,6 @@ class Program
         return false;
     }
 
-
     // 程序的主入口点
     static void Main(string[] args)
     {
@@ -54,7 +51,7 @@ class Program
         }
 
         IntPtr hDevice = NativeMethods.CreateFile(
-            @"\\.\\Blackout",
+            @"\\.\\gmer",
             NativeMethods.GenericAccess.GENERIC_WRITE | NativeMethods.GenericAccess.GENERIC_READ,
             NativeMethods.FileShare.FILE_SHARE_READ | NativeMethods.FileShare.FILE_SHARE_WRITE,
             IntPtr.Zero,
@@ -71,13 +68,16 @@ class Program
 
         uint input = (uint)pid;
         int bytesReturned;
-        bool result = NativeMethods.DeviceIoControl(
+        uint[] output = new uint[2];
+        uint outputSize = (uint)(output.Length * sizeof(uint));
+
+        bool result = NativeMethods.DeviceIoControl( // init_code
             hDevice,
             INITIALIZE_IOCTL_CODE,
             ref input,
             sizeof(uint),
-            IntPtr.Zero,
-            0,
+            output,
+            outputSize,
             out bytesReturned,
             IntPtr.Zero);
 
@@ -98,7 +98,7 @@ class Program
             TERMINATE_PROCESS_IOCTL_CODE,
             ref input, // 输入PID
             sizeof(uint),
-            IntPtr.Zero,
+            output,
             0,
             out bytesReturned,
             IntPtr.Zero);
@@ -178,8 +178,8 @@ class Program
             uint dwIoControlCode,  // 控制代码
             ref uint lpInBuffer,  // 输入缓冲区的指针
             int nInBufferSize,  // 输入缓冲区的大小
-            IntPtr lpOutBuffer,  // 输出缓冲区的指针
-            int nOutBufferSize,  // 输出缓冲区的大小
+            uint[] lpOutBuffer,  // 输出缓冲区的指针
+            uint nOutBufferSize,  // 输出缓冲区的大小
             out int lpBytesReturned,  // 返回的字节个数
             IntPtr lpOverlapped);  // OVERLAPPED结构的指针, 大多数情况为NULL
 
